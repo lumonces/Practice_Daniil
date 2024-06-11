@@ -7,17 +7,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -26,140 +31,75 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(start = 40.dp, end = 40.dp, top = 50.dp, bottom = 50.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            )
-            {
-                AddFirstTerm()
-                AddFirstButtons()
-                AddPlus()
-                AddSecondTerm()
-                AddSecondButtons()
-                AddEqual()
-                AddResult()
+            Content(modifier = Modifier.padding(40.dp))
+        }
+    }
+}
+@Composable
+fun Content(modifier: Modifier) {
+    val stateFirstTerm = remember { mutableIntStateOf(23) }
+    val stateSecondTerm = remember { mutableIntStateOf(35) }
+    val stateResult = remember { mutableIntStateOf(stateFirstTerm.intValue + stateSecondTerm.intValue) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        MyText(text = stateFirstTerm.intValue.toString())
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            MyButton(text = "-", modifier = Modifier.weight(1.0f)) {
+                stateFirstTerm.intValue -= 1
+            }
+            MyButton(text = "+", modifier = Modifier.weight(1.0f)) {
+                stateFirstTerm.intValue += 1
             }
         }
-    }
-}
 
-@Composable
-fun AddFirstTerm() {
-    Row (
-        modifier = Modifier.padding(top = 40.dp, bottom = 20.dp)
-    ) {
-        Text(text = "0", fontSize = 32.sp, fontFamily = FontFamily.Monospace)
-    }
-}
+        MyText(text = "+")
 
-@Composable
-fun AddFirstButtons() {
-    Row (
-        modifier = Modifier
-            .padding(bottom = 25.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Button (
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            ),
-            modifier = Modifier.weight(1f).padding(end = 15.dp)
+        MyText(text = stateSecondTerm.intValue.toString())
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Text("-", fontSize = 28.sp)
+            MyButton(text = "-", modifier = Modifier.weight(1.0f)) {
+                stateSecondTerm.intValue -= 1
+            }
+            MyButton(text = "+", modifier = Modifier.weight(1.0f)) {
+                stateSecondTerm.intValue += 1
+            }
         }
 
-        Button (
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            ),
-            modifier = Modifier.weight(1f).padding(start = 15.dp)
-        ) {
-            Text("+", fontSize = 28.sp)
-        }
-    }
-}
-
-@Composable
-fun AddPlus() {
-    Row (
-        modifier = Modifier.padding(top = 25.dp, bottom = 25.dp)
-    ) {
-        Text(text = "+", fontSize = 32.sp, fontFamily = FontFamily.Monospace)
-    }
-}
-
-@Composable
-fun AddSecondTerm() {
-    Row (
-        modifier = Modifier.padding(top = 25.dp, bottom = 20.dp)
-    ) {
-        Text(text = "0", fontSize = 32.sp, fontFamily = FontFamily.Monospace)
-    }
-}
-
-@Composable
-fun AddSecondButtons() {
-    Row (
-        modifier = Modifier
-            .padding(bottom = 25.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Button (
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            ),
-            modifier = Modifier.weight(1f).padding(end = 15.dp)
-        ) {
-            Text("-", fontSize = 28.sp)
+        MyButton(text = "=", modifier = Modifier.fillMaxWidth()) {
+            stateResult.intValue = stateFirstTerm.intValue + stateSecondTerm.intValue
         }
 
-        Button (
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            ),
-            modifier = Modifier.weight(1f).padding(start = 15.dp)
-        ) {
-            Text("+", fontSize = 28.sp)
-        }
+        MyText(text = stateResult.intValue.toString())
     }
 }
-
 @Composable
-fun AddEqual() {
-    Row (
-        modifier = Modifier.padding(top = 25.dp, bottom = 25.dp)
+fun MyButton(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Black,
+            contentColor = Color.White),
+        modifier = modifier
     ) {
-        Button (
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            ),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("=", fontSize = 28.sp)
-        }
+        Text(text, fontSize = 28.sp)
     }
 }
-
 @Composable
-fun AddResult() {
-    Row (
-        modifier = Modifier.padding(top = 25.dp)
-    ) {
-        Text(text = "0", fontSize = 32.sp, fontFamily = FontFamily.Monospace)
-    }
+fun MyText(text: String) {
+    Text(text = text, fontSize = 32.sp)
 }
