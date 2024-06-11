@@ -38,25 +38,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-class ViewModeForContent : ViewModel() {
+class ViewModelForContent : ViewModel() {
     var stateFirstTerm by mutableIntStateOf(0)
     var stateSecondTerm by mutableIntStateOf(0)
     var stateResult by mutableIntStateOf(0)
 
-    fun increaseFirstTerm() {
-        stateFirstTerm++
+    fun changeFirstTerm(number: Int) {
+        stateFirstTerm += number
     }
 
-    fun reduceFirstTerm() {
-        stateFirstTerm--
-    }
-
-    fun increaseSecondTerm() {
-        stateSecondTerm++
-    }
-
-    fun reduceSecondTerm() {
-        stateSecondTerm--
+    fun changeSecondTerm(number: Int) {
+        stateSecondTerm += number
     }
 
     fun calculateResult() {
@@ -66,7 +58,7 @@ class ViewModeForContent : ViewModel() {
 }
 
 @Composable
-fun Content(vm: ViewModeForContent = viewModel() ,modifier: Modifier) {
+fun Content(vm: ViewModelForContent = viewModel() ,modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -81,8 +73,8 @@ fun Content(vm: ViewModeForContent = viewModel() ,modifier: Modifier) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            MyButton(text = "-", modifier = Modifier.weight(1.0f)) { vm.reduceFirstTerm() }
-            MyButton(text = "+", modifier = Modifier.weight(1.0f)) { vm.increaseFirstTerm() }
+            MyButton(text = "-", modifier = Modifier.weight(1.0f)) { vm.changeFirstTerm(-1) }
+            MyButton(text = "+", modifier = Modifier.weight(1.0f)) { vm.changeFirstTerm(1) }
         }
 
         MyText(text = "+")
@@ -94,8 +86,8 @@ fun Content(vm: ViewModeForContent = viewModel() ,modifier: Modifier) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            MyButton(text = "-", modifier = Modifier.weight(1.0f)) { vm.reduceSecondTerm() }
-            MyButton(text = "+", modifier = Modifier.weight(1.0f)) { vm.increaseSecondTerm() }
+            MyButton(text = "-", modifier = Modifier.weight(1.0f)) { vm.changeSecondTerm(-1) }
+            MyButton(text = "+", modifier = Modifier.weight(1.0f)) { vm.changeSecondTerm(1) }
         }
 
         MyButton(text = "=", modifier = Modifier.fillMaxWidth()) { vm.calculateResult() }
