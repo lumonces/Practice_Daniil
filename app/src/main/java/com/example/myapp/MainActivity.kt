@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,12 +37,36 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-@Composable
-fun Content(modifier: Modifier) {
-    val stateFirstTerm = remember { mutableIntStateOf(23) }
-    val stateSecondTerm = remember { mutableIntStateOf(35) }
-    val stateResult = remember { mutableIntStateOf(stateFirstTerm.intValue + stateSecondTerm.intValue) }
 
+class ViewModeForContent : ViewModel() {
+    var stateFirstTerm by mutableIntStateOf(0)
+    var stateSecondTerm by mutableIntStateOf(0)
+    var stateResult by mutableIntStateOf(0)
+
+    fun increaseFirstTerm() {
+        stateFirstTerm++
+    }
+
+    fun reduceFirstTerm() {
+        stateFirstTerm--
+    }
+
+    fun increaseSecondTerm() {
+        stateSecondTerm++
+    }
+
+    fun reduceSecondTerm() {
+        stateSecondTerm--
+    }
+
+    fun calculateResult() {
+        stateResult = stateFirstTerm + stateSecondTerm
+    }
+
+}
+
+@Composable
+fun Content(vm: ViewModeForContent = viewModel() ,modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -48,43 +74,33 @@ fun Content(modifier: Modifier) {
         verticalArrangement = Arrangement.spacedBy(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MyText(text = stateFirstTerm.intValue.toString())
+        MyText(text = vm.stateFirstTerm.toString())
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            MyButton(text = "-", modifier = Modifier.weight(1.0f)) {
-                stateFirstTerm.intValue -= 1
-            }
-            MyButton(text = "+", modifier = Modifier.weight(1.0f)) {
-                stateFirstTerm.intValue += 1
-            }
+            MyButton(text = "-", modifier = Modifier.weight(1.0f)) { vm.reduceFirstTerm() }
+            MyButton(text = "+", modifier = Modifier.weight(1.0f)) { vm.increaseFirstTerm() }
         }
 
         MyText(text = "+")
 
-        MyText(text = stateSecondTerm.intValue.toString())
+        MyText(text = vm.stateSecondTerm.toString())
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            MyButton(text = "-", modifier = Modifier.weight(1.0f)) {
-                stateSecondTerm.intValue -= 1
-            }
-            MyButton(text = "+", modifier = Modifier.weight(1.0f)) {
-                stateSecondTerm.intValue += 1
-            }
+            MyButton(text = "-", modifier = Modifier.weight(1.0f)) { vm.reduceSecondTerm() }
+            MyButton(text = "+", modifier = Modifier.weight(1.0f)) { vm.increaseSecondTerm() }
         }
 
-        MyButton(text = "=", modifier = Modifier.fillMaxWidth()) {
-            stateResult.intValue = stateFirstTerm.intValue + stateSecondTerm.intValue
-        }
+        MyButton(text = "=", modifier = Modifier.fillMaxWidth()) { vm.calculateResult() }
 
-        MyText(text = stateResult.intValue.toString())
+        MyText(text = vm.stateResult.toString())
     }
 }
 @Composable
