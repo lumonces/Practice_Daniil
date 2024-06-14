@@ -25,6 +25,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.footballplayers.database.MyViewModel
 
 @Composable
 fun NewPlayer(navController: NavController, vm: MyViewModel) {
@@ -90,7 +92,13 @@ fun ContentForNewPlayer(navController: NavController, vm: MyViewModel) {
         Button(
             shape = RectangleShape,
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(15.dp)).height(60.dp),
-            onClick = { navController.navigate(Routes.Players.route) },
+            onClick = {
+                vm.addFootballer()
+                navController.navigate(Routes.Players.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {saveState = true}
+                    restoreState = true
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4B55B6),
                 contentColor = Color.White
@@ -100,6 +108,5 @@ fun ContentForNewPlayer(navController: NavController, vm: MyViewModel) {
                 Text("Save", fontSize = 24.sp)
             }
         }
-
     }
 }

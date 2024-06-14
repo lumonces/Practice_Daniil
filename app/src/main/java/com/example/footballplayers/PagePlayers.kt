@@ -7,12 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FabPosition
@@ -20,6 +21,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +35,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.footballplayers.database.FootballerEntity
+import com.example.footballplayers.database.MyViewModel
 
 @Composable
 fun Players(navController: NavController, vm: MyViewModel = viewModel()) {
@@ -79,16 +84,21 @@ fun ContentForPlayers(navController: NavController, vm: MyViewModel) {
             .background(Color.White)
             .fillMaxSize()
     ) {
-        Column {
-            AddItemOfList(navController = navController,"Daniil", "Huzarevich", vm)
-            AddItemOfList(navController = navController,"Oleg", "Boreysha", vm)
+        val footballerList by vm.footballerList.observeAsState(listOf())
+        LazyColumn {
+            items(footballerList) {
+                footballer -> AddItemOfList(
+                    navController = navController,
+                    footballer = footballer,
+                    vm = vm
+                )
+            }
         }
-
     }
 }
 
 @Composable
-fun AddItemOfList(navController: NavController, firstName : String, lastName : String, vm: MyViewModel) {
+fun AddItemOfList(navController: NavController, footballer : FootballerEntity, vm: MyViewModel) {
     Column {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -98,9 +108,8 @@ fun AddItemOfList(navController: NavController, firstName : String, lastName : S
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Box(modifier = Modifier.padding(start = 20.dp, top = 5.dp)) {
-                    Text(text = "$firstName $lastName", fontSize = 32.sp)
+                    Text(text = "${footballer.firstName} ${footballer.lastName}", fontSize = 32.sp)
                 }
-
 
                 Row(modifier = Modifier
                     .fillMaxSize()
@@ -115,8 +124,7 @@ fun AddItemOfList(navController: NavController, firstName : String, lastName : S
                             .clip(CircleShape)
                             .clickable {
                                 handleEditButton(
-                                    firstName,
-                                    lastName,
+                                    footballer.id,
                                     navController,
                                     vm
                                 )
@@ -136,14 +144,7 @@ fun AddItemOfList(navController: NavController, firstName : String, lastName : S
                         modifier = Modifier
                             .size(45.dp)
                             .clip(CircleShape)
-                            .clickable {
-                                handleEditButton(
-                                    firstName,
-                                    lastName,
-                                    navController,
-                                    vm
-                                )
-                            },
+                            .clickable { vm.deleteFootballer(footballer.id) },
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -165,9 +166,10 @@ fun AddItemOfList(navController: NavController, firstName : String, lastName : S
     }
 }
 
-
-fun handleEditButton(firstName: String, lastName: String, navController: NavController, vm: MyViewModel) {
-    vm.stateFirstName = firstName
-    vm.stateLastName = lastName
-    navController.navigate(Routes.EditPlayer.route)
+fun handleEditButton(id : Int, navController: NavController, vm: MyViewModel) {
+    vm.stateId = id
+    navController.navigate(Routes.EditPlayer.route) {
+        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+        restoreState = true
+    }
 }

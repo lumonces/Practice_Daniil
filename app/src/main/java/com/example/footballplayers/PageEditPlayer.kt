@@ -16,27 +16,33 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.footballplayers.database.FootballerEntity
+import com.example.footballplayers.database.MyViewModel
 
 @Composable
-fun EditPlayer(navController: NavController, vm : MyViewModel = viewModel(),) {
+fun EditPlayer(navController: NavController, vm : MyViewModel = viewModel()) {
+    val footballers by vm.footballerList.observeAsState(listOf())
+    val footballer = footballers.first{it.id == vm.stateId }
+    println(footballer.id)
     Scaffold(
         topBar = {
-            AddTopBarToPage("${vm.stateFirstName.uppercase()} ${vm.stateLastName.uppercase()}")
+            AddTopBarToPage("${footballer.firstName.uppercase()} ${footballer.lastName.uppercase()}")
         }
     ) {innerPadding ->
         Box(
@@ -45,16 +51,20 @@ fun EditPlayer(navController: NavController, vm : MyViewModel = viewModel(),) {
                 .fillMaxSize()
                 .background(Color(0xFFD9D9D9))
         ) {
-            ContentForSpecificPlayer()
+            ContentForSpecificPlayer(vm, navController, footballer)
         }
     }
 }
 
 @Composable
-fun ContentForSpecificPlayer() {
-    var stateFirstName by remember { mutableStateOf("") }
-    var stateLastName by remember { mutableStateOf("") }
-
+fun ContentForSpecificPlayer(vm : MyViewModel, navController: NavController, footballer: FootballerEntity) {
+    val initialFirstName by remember { mutableStateOf(footballer.firstName) }
+    val initialLastName by remember { mutableStateOf(footballer.lastName) }
+    LaunchedEffect(Unit) {
+        vm.changeFirstName(initialFirstName)
+        vm.changeLastName(initialLastName)
+    }
+    println(vm.stateFirstName + " " + vm.stateLastName)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,10 +73,12 @@ fun ContentForSpecificPlayer() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
-            value = stateFirstName,
-            onValueChange = { stateFirstName = it },
+            value = vm.stateFirstName,
+            onValueChange = { vm.changeFirstName(it) },
             placeholder = { Text(text = "Firstname", fontSize = 23.sp) },
-            modifier = Modifier.fillMaxWidth().height(60.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -80,10 +92,12 @@ fun ContentForSpecificPlayer() {
         )
 
         TextField(
-            value = stateLastName,
-            onValueChange = { stateLastName = it },
+            value = vm.stateLastName,
+            onValueChange = { vm.stateLastName = it },
             placeholder = { Text(text = "Lastname", fontSize = 23.sp) },
-            modifier = Modifier.fillMaxWidth().height(60.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -98,8 +112,11 @@ fun ContentForSpecificPlayer() {
 
         Button(
             shape = RectangleShape,
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(15.dp)).height(60.dp),
-            onClick = {  },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(15.dp))
+                .height(60.dp),
+            onClick = { handleEditButton(navController, vm, footballer) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4B55B6),
                 contentColor = Color.White
@@ -109,6 +126,13 @@ fun ContentForSpecificPlayer() {
                 Text("Save", fontSize = 24.sp)
             }
         }
+    }
+}
 
+fun handleEditButton(navController: NavController, vm: MyViewModel, footballer: FootballerEntity) {
+    vm.updateFootballer(footballer.id, vm.stateFirstName, vm.stateLastName)
+    navController.navigate(Routes.Players.route) {
+        popUpTo(navController.graph.findStartDestination().id) {saveState = true}
+        restoreState = true
     }
 }
