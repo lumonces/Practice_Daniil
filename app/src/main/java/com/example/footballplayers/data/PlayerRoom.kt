@@ -1,25 +1,26 @@
-package com.example.footballplayers.database
+package com.example.footballplayers.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.footballplayers.domain.Player
 
-@Database(entities = [FootballerEntity::class], version = 1)
-abstract class FootballerRoom : RoomDatabase() {
+@Database(entities = [Player::class], version = 1)
+abstract class PlayerRoom : RoomDatabase() {
 
-    abstract fun footballerDao() : FootballerDAO
+    abstract fun playerDao() : PlayerDAO
 
     companion object {
-        private var INSTANCE : FootballerRoom? = null
+        private var INSTANCE : PlayerRoom? = null
 
-        fun getDataBase(context : Context) : FootballerRoom {
+        fun getDataBase(context : Context) : PlayerRoom {
             synchronized(this) {
                 var tempInstance = INSTANCE
                 if(tempInstance == null) {
                     tempInstance = Room.databaseBuilder(
                         context.applicationContext,
-                        FootballerRoom::class.java,
+                        PlayerRoom::class.java,
                         "Footballers_DataBase"
                     ).fallbackToDestructiveMigration().build()
                     INSTANCE = tempInstance
@@ -28,5 +29,4 @@ abstract class FootballerRoom : RoomDatabase() {
             }
         }
     }
-
 }
