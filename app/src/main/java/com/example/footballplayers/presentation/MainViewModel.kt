@@ -7,13 +7,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.footballplayers.data.PlayerRoom
-import com.example.footballplayers.domain.Player
-import com.example.footballplayers.domain.PlayerRepository
+import com.example.footballplayers.data.repository.PlayerRepositoryImpl
+import com.example.footballplayers.domain.models.Player
+import com.example.footballplayers.domain.usecases.DeletePlayerUseCase
+import com.example.footballplayers.domain.usecases.EditPlayerUseCase
+import com.example.footballplayers.domain.usecases.NewPlayerUseCase
+import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     val playerList : LiveData<List<Player>>
-    private val playerRep : PlayerRepository
+    private val playerRep : PlayerRepositoryImpl
 
     private var stateId by mutableIntStateOf(0)
     private var stateFirstName by mutableStateOf("")
@@ -21,20 +26,30 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         val playerDao = PlayerRoom.getDataBase(application).playerDao()
-        playerRep = PlayerRepository(playerDao)
-        playerList = playerRep.allPlayers
+        playerRep = PlayerRepositoryImpl(playerDao)
+        playerList = playerRep.getAllPlayers()
     }
 
+    private val newPlayerUseCase = NewPlayerUseCase(playerRep)
+    private val editPlayerUseCase = EditPlayerUseCase(playerRep)
+    private val deletePlayerUseCase = DeletePlayerUseCase(playerRep)
+
     fun addPlayer() {
-        playerRep.addPlayer(Player(stateFirstName, stateLastName))
+        viewModelScope.launch {
+            newPlayerUseCase.execute(Player(stateFirstName, stateLastName))
+        }
     }
 
     fun deletePlayer(id : Int) {
-        playerRep.deletePlayer(id)
+        viewModelScope.launch {
+            deletePlayerUseCase.execute(id)
+        }
     }
 
     fun updatePlayer(id : Int) {
-        playerRep.updatePlayer(id, stateFirstName, stateLastName)
+        viewModelScope.launch {
+            editPlayerUseCase.execute(id, stateFirstName, stateLastName)
+        }
     }
 
     fun editId(newId : Int) {

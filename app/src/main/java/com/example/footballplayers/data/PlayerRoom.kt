@@ -4,9 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.footballplayers.domain.Player
 
-@Database(entities = [Player::class], version = 1)
+@Database(entities = [PlayerEntity::class], version = 1)
 abstract class PlayerRoom : RoomDatabase() {
 
     abstract fun playerDao() : PlayerDAO

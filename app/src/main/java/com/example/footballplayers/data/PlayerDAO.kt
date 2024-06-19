@@ -4,19 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.footballplayers.domain.Player
 
 @Dao
 interface PlayerDAO {
     @Query("SELECT * FROM Player")
-    fun getAllPlayers() : LiveData<List<Player>>
+    fun getAllPlayers() : LiveData<List<PlayerEntity>>
 
     @Insert
-    fun addPlayer(player : Player)
+    suspend fun addPlayer(player : PlayerEntity)
 
     @Query("DELETE FROM Player WHERE id = :id")
-    fun deletePlayer(id : Int)
+    suspend fun deletePlayer(id : Int)
 
     @Query("UPDATE Player SET firstName = :newFirstName, lastName = :newLastName WHERE id = :id")
-    fun updatePlayer(id : Int, newFirstName : String, newLastName : String)
+    suspend fun updatePlayer(id : Int, newFirstName : String, newLastName : String)
 }
