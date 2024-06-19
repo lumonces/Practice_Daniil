@@ -5,7 +5,7 @@ import com.example.footballplayers.domain.repository.PlayerRepository
 
 class NewPlayerUseCase(private val playerRepository: PlayerRepository) {
     suspend fun execute(player : Player) {
-        if(player.getFirstName() != "" && player.getLastName() != "") {
+        if(player.firstName != "" && player.lastName != "") {
             playerRepository.addPlayer(player)
         }
     }

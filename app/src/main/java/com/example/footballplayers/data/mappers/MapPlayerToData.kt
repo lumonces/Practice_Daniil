@@ -4,7 +4,6 @@ import com.example.footballplayers.data.PlayerEntity
 import com.example.footballplayers.domain.models.Player
 
 fun Player.toPlayerEntity() = PlayerEntity(
-    id = getId(),
-    firstName = getFirstName(),
-    lastName = getLastName()
+    firstName = firstName,
+    lastName = lastName
 )

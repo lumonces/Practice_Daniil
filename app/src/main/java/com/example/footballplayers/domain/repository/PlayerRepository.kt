@@ -7,9 +7,11 @@ interface PlayerRepository {
 
     fun getAllPlayers() : LiveData<List<Player>>
 
+    suspend fun getPlayerById(id : Long) : Player
+
     suspend fun addPlayer(player: Player)
 
-    suspend fun deletePlayer(id : Int)
+    suspend fun deletePlayer(id : Long)
 
-    suspend fun updatePlayer(id: Int, newFirstName : String, newLastName : String)
+    suspend fun updatePlayer(id: Long, newFirstName : String, newLastName : String)
 }
