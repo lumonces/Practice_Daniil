@@ -10,10 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.footballplayers.presentation.AddTopBarToPage
 import com.example.footballplayers.presentation.MainViewModel
-import com.example.footballplayers.presentation.NavigationState
 
 @Composable
-fun NewPlayerPage(navigationState: NavigationState, vm: MainViewModel) {
+fun NewPlayerPage(onBackPressed : () -> Unit, vm: MainViewModel) {
     Scaffold(
         topBar = {
             AddTopBarToPage("NEW PLAYER")
@@ -25,7 +24,7 @@ fun NewPlayerPage(navigationState: NavigationState, vm: MainViewModel) {
                 .fillMaxSize()
                 .background(Color(0xFFD9D9D9))
         ) {
-            ContentForNewPlayer(navigationState = navigationState, vm = vm)
+            ContentForNewPlayer(onBackPressed = onBackPressed, vm = vm)
         }
     }
 }

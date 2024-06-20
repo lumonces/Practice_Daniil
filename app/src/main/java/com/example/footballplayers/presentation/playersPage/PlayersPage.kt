@@ -16,11 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.footballplayers.presentation.AddTopBarToPage
 import com.example.footballplayers.presentation.MainViewModel
-import com.example.footballplayers.presentation.NavigationState
-import com.example.footballplayers.presentation.Routes
 
 @Composable
-fun PlayersPage(navigationState: NavigationState, vm : MainViewModel) {
+fun PlayersPage(navigateToNewPlayerPage : () -> Unit, navigateToEditPage : () -> Unit, vm : MainViewModel) {
     Scaffold (
         topBar = {
             AddTopBarToPage("PLAYERS")
@@ -31,7 +29,7 @@ fun PlayersPage(navigationState: NavigationState, vm : MainViewModel) {
                     onClick = {
                         vm.editFirstName("")
                         vm.editLastName("")
-                        navigationState.navigateTo(Routes.ROUTE_NEW_PLAYER_PAGE)
+                        navigateToNewPlayerPage()
                     },
                     shape = CircleShape,
                     containerColor = Color(0xFF4B55B6),
@@ -48,7 +46,7 @@ fun PlayersPage(navigationState: NavigationState, vm : MainViewModel) {
             .padding(innerPadding)
             .background(Color(0xFFD9D9D9))
         ) {
-            ContentForPlayers(navigationState, vm)
+            ContentForPlayers(navigateToEditPage, vm)
         }
     }
 }

@@ -23,11 +23,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.footballplayers.presentation.MainViewModel
-import com.example.footballplayers.presentation.NavigationState
-import com.example.footballplayers.presentation.Routes
 
 @Composable
-fun ContentForNewPlayer(navigationState: NavigationState, vm: MainViewModel) {
+fun ContentForNewPlayer(onBackPressed : () -> Unit, vm: MainViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +79,7 @@ fun ContentForNewPlayer(navigationState: NavigationState, vm: MainViewModel) {
                 .height(60.dp),
             onClick = {
                 vm.addPlayer()
-                navigationState.navigateTo(Routes.ROUTE_PLAYERS_PAGE)
+                onBackPressed()
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4B55B6),

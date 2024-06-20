@@ -10,10 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.footballplayers.presentation.AddTopBarToPage
 import com.example.footballplayers.presentation.MainViewModel
-import com.example.footballplayers.presentation.NavigationState
 
 @Composable
-fun EditPlayerPage(navigationState: NavigationState, vm : MainViewModel) {
+fun EditPlayerPage(onBackPressed : () -> Unit, vm : MainViewModel) {
     val player = vm.getPlayerById(vm.getId())
     println("${player.id} ${player.firstName} ${player.lastName}")
     vm.editFirstName(player.firstName)
@@ -29,7 +28,7 @@ fun EditPlayerPage(navigationState: NavigationState, vm : MainViewModel) {
                 .fillMaxSize()
                 .background(Color(0xFFD9D9D9))
         ) {
-            ContentForEditablePlayer(navigationState = navigationState, vm = vm, player = player)
+            ContentForEditablePlayer(onBackPressed = onBackPressed, vm = vm, player = player)
         }
     }
 }

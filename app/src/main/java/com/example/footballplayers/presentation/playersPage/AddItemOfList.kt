@@ -27,11 +27,9 @@ import androidx.compose.ui.unit.sp
 import com.example.footballplayers.R
 import com.example.footballplayers.domain.models.Player
 import com.example.footballplayers.presentation.MainViewModel
-import com.example.footballplayers.presentation.NavigationState
-import com.example.footballplayers.presentation.Routes
 
 @Composable
-fun AddItemOfList(navigationState: NavigationState, vm: MainViewModel, player: Player) {
+fun AddItemOfList(navigateToEditPage : () -> Unit, vm: MainViewModel, player: Player) {
     Column {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -58,7 +56,7 @@ fun AddItemOfList(navigationState: NavigationState, vm: MainViewModel, player: P
                             .clip(CircleShape)
                             .clickable {
                                 vm.editId(player.id)
-                                navigationState.navigateTo(Routes.ROUTE_EDIT_PLAYER_PAGE)
+                                navigateToEditPage()
                             },
                         contentAlignment = Alignment.Center
                     ) {

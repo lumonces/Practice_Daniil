@@ -15,10 +15,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.footballplayers.presentation.MainViewModel
-import com.example.footballplayers.presentation.NavigationState
 
 @Composable
-fun ContentForPlayers(navigationState: NavigationState, vm: MainViewModel) {
+fun ContentForPlayers(navigateToEditPage : () -> Unit, vm: MainViewModel) {
     Box(
         modifier = Modifier
             .padding(20.dp)
@@ -30,7 +29,7 @@ fun ContentForPlayers(navigationState: NavigationState, vm: MainViewModel) {
         LazyColumn {
             items(playersList) { player->
                 AddItemOfList(
-                    navigationState = navigationState,
+                    navigateToEditPage = navigateToEditPage,
                     vm = vm,
                     player = player
                 )

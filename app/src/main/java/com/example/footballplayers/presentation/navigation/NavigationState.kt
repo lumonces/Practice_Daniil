@@ -1,4 +1,4 @@
-package com.example.footballplayers.presentation
+package com.example.footballplayers.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -6,7 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.get
 
-class NavigationState(private val navHostController: NavHostController) {
+class NavigationState(val navHostController: NavHostController) {
+
     fun navigateTo(route : String) {
         navHostController.navigate(route) {
             popUpTo(navHostController.graph[Routes.PlayersPage.route].id) {
@@ -14,6 +15,10 @@ class NavigationState(private val navHostController: NavHostController) {
             }
             restoreState = true
         }
+    }
+
+    fun onBackPressed() {
+        navHostController.popBackStack()
     }
 }
 

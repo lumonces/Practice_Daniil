@@ -24,11 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.footballplayers.domain.models.Player
 import com.example.footballplayers.presentation.MainViewModel
-import com.example.footballplayers.presentation.NavigationState
-import com.example.footballplayers.presentation.Routes
 
 @Composable
-fun ContentForEditablePlayer(navigationState: NavigationState, vm : MainViewModel, player: Player) {
+fun ContentForEditablePlayer(onBackPressed : () -> Unit, vm : MainViewModel, player: Player) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,7 +80,7 @@ fun ContentForEditablePlayer(navigationState: NavigationState, vm : MainViewMode
                 .height(60.dp),
             onClick = {
                 vm.updatePlayer(player.id)
-                navigationState.navigateTo(Routes.ROUTE_PLAYERS_PAGE)
+                onBackPressed()
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4B55B6),

@@ -1,4 +1,4 @@
-package com.example.footballplayers.presentation
+package com.example.footballplayers.presentation.navigation
 
 sealed class Routes(val route : String) {
     data object PlayersPage : Routes(route = ROUTE_PLAYERS_PAGE)
