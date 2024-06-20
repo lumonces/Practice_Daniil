@@ -1,4 +1,4 @@
-package com.example.footballplayers.presentation.newPlayerPage
+package com.example.footballplayers.presentation.authorization
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.example.footballplayers.presentation.MainViewModel
 
 @Composable
-fun ContentForNewPlayer(onBackPressed : () -> Unit, vm: MainViewModel) {
+fun ContentForAuthorization(navigateToPlayersPage : () -> Unit, vm: MainViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,9 +34,9 @@ fun ContentForNewPlayer(onBackPressed : () -> Unit, vm: MainViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
-            value = vm.getFirstName(),
-            onValueChange = { vm.setFirstName(it)},
-            placeholder = { Text(text = "Firstname", fontSize = 23.sp) },
+            value = vm.getLogin(),
+            onValueChange = { vm.setLogin(it)},
+            placeholder = { Text(text = "Login", fontSize = 23.sp) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
@@ -53,9 +53,9 @@ fun ContentForNewPlayer(onBackPressed : () -> Unit, vm: MainViewModel) {
         )
 
         TextField(
-            value = vm.getLastName(),
-            onValueChange = { vm.setLastName(it) },
-            placeholder = { Text(text = "Lastname", fontSize = 23.sp) },
+            value = vm.getPassword(),
+            onValueChange = { vm.setPassword(it) },
+            placeholder = { Text(text = "Password", fontSize = 23.sp) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
@@ -78,8 +78,7 @@ fun ContentForNewPlayer(onBackPressed : () -> Unit, vm: MainViewModel) {
                 .clip(RoundedCornerShape(15.dp))
                 .height(60.dp),
             onClick = {
-                vm.addPlayer()
-                onBackPressed()
+                vm.checkAuthorization(vm.getLogin(), vm.getPassword(), navigateToPlayersPage)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4B55B6),
@@ -87,7 +86,7 @@ fun ContentForNewPlayer(onBackPressed : () -> Unit, vm: MainViewModel) {
             ),
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Text("Save", fontSize = 24.sp)
+                Text("Enter", fontSize = 24.sp)
             }
         }
     }

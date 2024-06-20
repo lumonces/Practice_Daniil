@@ -15,8 +15,8 @@ import com.example.footballplayers.presentation.MainViewModel
 fun EditPlayerPage(onBackPressed : () -> Unit, vm : MainViewModel) {
     val player = vm.getPlayerById(vm.getId())
     println("${player.id} ${player.firstName} ${player.lastName}")
-    vm.editFirstName(player.firstName)
-    vm.editLastName(player.lastName)
+    vm.setFirstName(player.firstName)
+    vm.setLastName(player.lastName)
     Scaffold(
         topBar = {
             AddTopBarToPage("${player.firstName.uppercase()} ${player.lastName.uppercase()}")

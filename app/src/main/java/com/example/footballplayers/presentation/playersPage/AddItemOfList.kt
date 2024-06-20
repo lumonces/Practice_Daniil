@@ -55,7 +55,7 @@ fun AddItemOfList(navigateToEditPage : () -> Unit, vm: MainViewModel, player: Pl
                             .size(45.dp)
                             .clip(CircleShape)
                             .clickable {
-                                vm.editId(player.id)
+                                vm.setId(player.id)
                                 navigateToEditPage()
                             },
                         contentAlignment = Alignment.Center

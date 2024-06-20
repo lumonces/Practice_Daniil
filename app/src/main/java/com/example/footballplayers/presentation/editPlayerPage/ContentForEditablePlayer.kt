@@ -36,7 +36,7 @@ fun ContentForEditablePlayer(onBackPressed : () -> Unit, vm : MainViewModel, pla
     ) {
         TextField(
             value = vm.getFirstName(),
-            onValueChange = { vm.editFirstName(it) },
+            onValueChange = { vm.setFirstName(it) },
             placeholder = { Text(text = "Firstname", fontSize = 23.sp) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,7 +55,7 @@ fun ContentForEditablePlayer(onBackPressed : () -> Unit, vm : MainViewModel, pla
 
         TextField(
             value = vm.getLastName(),
-            onValueChange = { vm.editLastName(it) },
+            onValueChange = { vm.setLastName(it) },
             placeholder = { Text(text = "Lastname", fontSize = 23.sp) },
             modifier = Modifier
                 .fillMaxWidth()

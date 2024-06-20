@@ -5,6 +5,12 @@ import com.example.footballplayers.domain.models.Player
 
 interface PlayerRepository {
 
+    fun saveLoginPassword(login : String, password : String)
+
+    fun getLogin() : String
+
+    fun getPassword() : String
+
     fun getAllPlayers() : LiveData<List<Player>>
 
     suspend fun getPlayerById(id : Long) : Player

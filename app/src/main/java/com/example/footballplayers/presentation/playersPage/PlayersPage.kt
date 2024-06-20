@@ -27,8 +27,8 @@ fun PlayersPage(navigateToNewPlayerPage : () -> Unit, navigateToEditPage : () ->
             Box(modifier = Modifier.padding(end = 20.dp, bottom = 25.dp)) {
                 FloatingActionButton(
                     onClick = {
-                        vm.editFirstName("")
-                        vm.editLastName("")
+                        vm.setFirstName("")
+                        vm.setLastName("")
                         navigateToNewPlayerPage()
                     },
                     shape = CircleShape,

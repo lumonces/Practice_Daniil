@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.footballplayers.data.PlayerRoom
 import com.example.footballplayers.data.repository.PlayerRepositoryImpl
 import com.example.footballplayers.domain.models.Player
+import com.example.footballplayers.domain.usecases.CheckAuthorizationUseCase
 import com.example.footballplayers.domain.usecases.DeletePlayerUseCase
 import com.example.footballplayers.domain.usecases.EditPlayerUseCase
 import com.example.footballplayers.domain.usecases.GetPlayerByIdUseCase
@@ -22,20 +23,32 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val playerList : LiveData<List<Player>>
     private val playerRep : PlayerRepositoryImpl
 
+    init {
+        val playerDao = PlayerRoom.getDataBase(application).playerDao()
+        playerRep = PlayerRepositoryImpl(playerDao, context = application.applicationContext)
+        playerList = playerRep.getAllPlayers()
+    }
+
     private var stateId by mutableLongStateOf(0)
     private var stateFirstName by mutableStateOf("")
     private var stateLastName by mutableStateOf("")
 
-    init {
-        val playerDao = PlayerRoom.getDataBase(application).playerDao()
-        playerRep = PlayerRepositoryImpl(playerDao)
-        playerList = playerRep.getAllPlayers()
-    }
+    private var stateLogin by mutableStateOf(playerRep.getLogin())
+    private var statePassword by mutableStateOf(playerRep.getPassword())
+
+
 
     private val newPlayerUseCase = NewPlayerUseCase(playerRep)
     private val editPlayerUseCase = EditPlayerUseCase(playerRep)
     private val deletePlayerUseCase = DeletePlayerUseCase(playerRep)
     private val getPlayerByIdUseCase = GetPlayerByIdUseCase(playerRep)
+    private val checkAuthorizationUseCase = CheckAuthorizationUseCase(playerRep)
+
+    fun checkAuthorization(login : String, password : String, navigateToPlayersPage : () -> Unit) {
+        if (checkAuthorizationUseCase.execute(login = login, password = password)) {
+            navigateToPlayersPage()
+        }
+    }
 
     fun getPlayerById(id : Long) : Player {
         return runBlocking {
@@ -60,16 +73,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun editId(newId : Long) {
+    fun setId(newId : Long) {
         stateId = newId
     }
 
-    fun editFirstName(newFirstName: String) {
+    fun setFirstName(newFirstName: String) {
         stateFirstName = newFirstName
     }
 
-    fun editLastName(newLastName: String) {
+    fun setLastName(newLastName: String) {
         stateLastName = newLastName
+    }
+
+    fun setLogin(newLogin : String) {
+        stateLogin = newLogin
+    }
+
+    fun setPassword(newPassword : String) {
+        statePassword = newPassword
     }
 
     fun getId() : Long {
@@ -82,5 +103,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getLastName() : String {
         return stateLastName
+    }
+
+    fun getLogin() : String {
+        return stateLogin
+    }
+
+    fun getPassword() : String {
+        return statePassword
     }
 }

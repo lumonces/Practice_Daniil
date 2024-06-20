@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.footballplayers.presentation.authorization.AuthorizationPage
 import com.example.footballplayers.presentation.editPlayerPage.*
 import com.example.footballplayers.presentation.navigation.Routes
 import com.example.footballplayers.presentation.navigation.rememberNavigationState
@@ -29,28 +30,34 @@ fun Content(vm : MainViewModel = viewModel()) {
     val navigationState = rememberNavigationState()
     NavHost(
         navController = navigationState.navHostController,
-        startDestination = Routes.ROUTE_PLAYERS_PAGE
+        startDestination = Routes.AuthorizationPage.route
     ) {
-        composable(Routes.ROUTE_PLAYERS_PAGE) {
+        composable(Routes.PlayersPage.route) {
             PlayersPage(
                 navigateToNewPlayerPage = {
-                    navigationState.navigateTo(Routes.ROUTE_NEW_PLAYER_PAGE)
+                    navigationState.navigateTo(Routes.NewPlayerPage.route)
                 },
                 navigateToEditPage = {
-                    navigationState.navigateTo(Routes.ROUTE_EDIT_PLAYER_PAGE)
+                    navigationState.navigateTo(Routes.EditPlayerPage.route)
                 },
                 vm = vm
             )
         }
-        composable(Routes.ROUTE_NEW_PLAYER_PAGE) {
+        composable(Routes.NewPlayerPage.route) {
             NewPlayerPage(
                 onBackPressed = { navigationState.onBackPressed() },
                 vm = vm
             )
         }
-        composable(Routes.ROUTE_EDIT_PLAYER_PAGE) {
+        composable(Routes.EditPlayerPage.route) {
             EditPlayerPage(
                 onBackPressed = { navigationState.onBackPressed() },
+                vm = vm
+            )
+        }
+        composable(Routes.AuthorizationPage.route) {
+            AuthorizationPage(
+                navigateToPlayersPage = { navigationState.navigateTo(Routes.PlayersPage.route) },
                 vm = vm
             )
         }
